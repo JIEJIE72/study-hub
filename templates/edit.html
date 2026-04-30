@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Note</title>
+</head>
+
+<body style="font-family:Arial;padding:20px;">
+
+<!-- NAV -->
+<div style="position:relative; height:40px; margin-bottom:20px; line-height:40px;">
+
+    <div style="position:absolute; left:0;">
+        <a href="/note/{{ note[0] }}">⬅ Back</a>
+    </div>
+
+    <div style="text-align:center;">
+        <a href="/">🏠 Home</a>
+    </div>
+
+</div>
+
+<h2>Edit Note</h2>
+
+<form method="POST" enctype="multipart/form-data" onsubmit="save()">
+
+Title:<br>
+<input name="title" value="{{ note[2] }}" style="width:100%"><br><br>
+
+Subject:<br>
+<input name="subject" value="{{ note[3] }}" style="width:100%"><br><br>
+
+<!-- SAME TOOLBAR -->
+<button type="button" onclick="cmd('bold')">B</button>
+<button type="button" onclick="cmd('italic')">I</button>
+<button type="button" onclick="cmd('underline')">U</button>
+
+<button type="button" onclick="insertColor('red')">Red</button>
+<button type="button" onclick="insertColor('green')">Green</button>
+<button type="button" onclick="insertColor('blue')">Blue</button>
+
+<button type="button" onclick="insertSize('12px')">Small</button>
+<button type="button" onclick="insertSize('16px')">Normal</button>
+<button type="button" onclick="insertSize('24px')">Large</button>
+
+<button type="button" onclick="toggleSymbols()">📐 Math</button>
+
+<hr>
+
+<div id="editor"
+     contenteditable="true"
+     style="border:1px solid #ccc;min-height:350px;padding:10px;"></div>
+
+<input type="hidden" name="content" id="content">
+
+<br>
+<input type="file" name="file" multiple>
+
+<br><br>
+<button>Save</button>
+
+</form>
+
+{% include "symbols.html" %}
+
+<script>
+window.onload = function(){
+    document.getElementById("editor").innerHTML =
+        `{{ note[4] | safe }}`;
+};
+
+function cmd(a,b=null){
+    document.execCommand(a,false,b);
+}
+
+function insertColor(color){
+    let sel = window.getSelection();
+    if(!sel.rangeCount) return;
+
+    let range = sel.getRangeAt(0);
+    let text = sel.toString();
+    if(!text) return;
+
+    let span = document.createElement("span");
+    span.style.color = color;
+    span.textContent = text;
+
+    range.deleteContents();
+    range.insertNode(span);
+}
+
+function insertSize(size){
+    let sel = window.getSelection();
+    if(!sel.rangeCount) return;
+
+    let range = sel.getRangeAt(0);
+    let text = sel.toString();
+    if(!text) return;
+
+    let span = document.createElement("span");
+    span.style.fontSize = size;
+    span.textContent = text;
+
+    range.deleteContents();
+    range.insertNode(span);
+}
+
+function save(){
+    document.getElementById("content").value =
+        document.getElementById("editor").innerHTML;
+}
+
+function toggleSymbols(){
+    let p = document.getElementById("symbolPanel");
+    p.style.display = (p.style.display==="block")?"none":"block";
+}
+
+function insertSymbol(sym){
+    document.execCommand("insertText", false, sym);
+}
+</script>
+
+</body>
+</html>

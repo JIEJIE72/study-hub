@@ -1,0 +1,48 @@
+<div id="symbolPanel" style="
+display:none;
+position:fixed;
+top:60px;
+right:40px;
+width:380px;
+height:500px;
+background:white;
+border:2px solid #333;
+padding:10px;
+overflow:auto;
+z-index:9999;
+">
+
+<h3>📐 Math Symbols</h3>
+
+<h4>Algebra</h4>
+<button type="button" onclick="insert('x²')">x²</button>
+<button type="button" onclick="insert('x³')">x³</button>
+<button type="button" onclick="insert('xⁿ')">xⁿ</button>
+<button type="button" onclick="insert('√x')">√x</button>
+
+<h4>Fractions</h4>
+<button type="button" onclick="insert('½')">½</button>
+<button type="button" onclick="insert('(a/b)')">(a/b)</button>
+
+<h4>Geometry</h4>
+<button type="button" onclick="insert('△')">△</button>
+<button type="button" onclick="insert('∠')">∠</button>
+<button type="button" onclick="insert('⊥')">⊥</button>
+
+<h4>Greek</h4>
+<button type="button" onclick="insert('α')">α</button>
+<button type="button" onclick="insert('β')">β</button>
+<button type="button" onclick="insert('π')">π</button>
+<button type="button" onclick="insert('θ')">θ</button>
+
+<h4>Operators</h4>
+<button type="button" onclick="insert('≤')">≤</button>
+<button type="button" onclick="insert('≥')">≥</button>
+<button type="button" onclick="insert('≠')">≠</button>
+<button type="button" onclick="insert('±')">±</button>
+<button type="button" onclick="insert('×')">×</button>
+
+<br><br>
+<button type="button" onclick="closeSymbols()">❌ Close</button>
+
+</div>

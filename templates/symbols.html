@@ -1,0 +1,164 @@
+<!-- FLOATING MATH SYMBOL WINDOW -->
+<div id="symbolPanel"
+     style="
+        display:none;
+        position:fixed;
+        top:100px;
+        right:40px;
+        width:320px;
+        max-height:450px;
+        overflow:auto;
+        background:white;
+        border:1px solid #ccc;
+        box-shadow:0 5px 20px rgba(0,0,0,0.25);
+        padding:10px;
+        z-index:9999;
+        font-size:14px;
+     ">
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <b>📐 Math Symbols</b>
+        <button type="button" onclick="toggleSymbols()">✖</button>
+    </div>
+
+    <hr>
+
+    <!-- POWERS -->
+    <b>Powers</b><br>
+    <button onclick="insertSymbol('²')">²</button>
+    <button onclick="insertSymbol('³')">³</button>
+    <button onclick="insertSymbol('⁴')">⁴</button>
+    <button onclick="insertSymbol('⁵')">⁵</button>
+
+    <br><br>
+    <!-- CUSTOM POWER -->
+    <input type="text" id="customPower" placeholder="Enter power (e.g. 6)" style="width:120px;">
+    <button onclick="insertCustomPower()">Insert</button>
+
+    <hr>
+
+    <!-- ROOTS -->
+    <b>Roots</b><br>
+    <button onclick="insertSymbol('√')">√</button>
+    <button onclick="insertSymbol('∛')">∛</button>
+    <button onclick="insertSymbol('∜')">∜</button>
+
+    <br><br>
+    <!-- CUSTOM ROOT -->
+    <input type="text" id="customRoot" placeholder="Enter root (e.g. 5)" style="width:120px;">
+    <button onclick="insertCustomRoot()">Insert</button>
+
+    <hr>
+
+    <!-- GREEK -->
+    <b>Greek Letters</b><br>
+    <button onclick="insertSymbol('π')">π</button>
+    <button onclick="insertSymbol('θ')">θ</button>
+    <button onclick="insertSymbol('α')">α</button>
+    <button onclick="insertSymbol('β')">β</button>
+    <button onclick="insertSymbol('λ')">λ</button>
+    <button onclick="insertSymbol('μ')">μ</button>
+    <button onclick="insertSymbol('σ')">σ</button>
+
+    <hr>
+
+    <!-- OPERATORS -->
+    <b>Operators</b><br>
+    <button onclick="insertSymbol('±')">±</button>
+    <button onclick="insertSymbol('÷')">÷</button>
+    <button onclick="insertSymbol('×')">×</button>
+    <button onclick="insertSymbol('≈')">≈</button>
+    <button onclick="insertSymbol('≠')">≠</button>
+    <button onclick="insertSymbol('≤')">≤</button>
+    <button onclick="insertSymbol('≥')">≥</button>
+    <button onclick="insertSymbol('=')">=</button>
+
+    <hr>
+
+    <!-- CALCULUS -->
+    <b>Calculus</b><br>
+    <button onclick="insertSymbol('∞')">∞</button>
+    <button onclick="insertSymbol('∑')">∑</button>
+    <button onclick="insertSymbol('∏')">∏</button>
+    <button onclick="insertSymbol('∫')">∫</button>
+    <button onclick="insertSymbol('∂')">∂</button>
+    <button onclick="insertSymbol('∆')">∆</button>
+    <button onclick="insertSymbol('∇')">∇</button>
+
+    <hr>
+
+    <!-- GEOMETRY -->
+    <b>Geometry</b><br>
+    <button onclick="insertSymbol('°')">°</button>
+    <button onclick="insertSymbol('∠')">∠</button>
+    <button onclick="insertSymbol('⊥')">⊥</button>
+    <button onclick="insertSymbol('∥')">∥</button>
+    <button onclick="insertSymbol('∽')">∽</button>
+
+    <hr>
+
+    <!-- SET THEORY -->
+    <b>Set Theory</b><br>
+    <button onclick="insertSymbol('∈')">∈</button>
+    <button onclick="insertSymbol('∉')">∉</button>
+    <button onclick="insertSymbol('⊂')">⊂</button>
+    <button onclick="insertSymbol('⊆')">⊆</button>
+    <button onclick="insertSymbol('⊃')">⊃</button>
+    <button onclick="insertSymbol('∪')">∪</button>
+    <button onclick="insertSymbol('∩')">∩</button>
+
+    <hr>
+
+    <!-- LOGIC -->
+    <b>Logic</b><br>
+    <button onclick="insertSymbol('⇒')">⇒</button>
+    <button onclick="insertSymbol('⇔')">⇔</button>
+    <button onclick="insertSymbol('¬')">¬</button>
+    <button onclick="insertSymbol('∧')">∧</button>
+    <button onclick="insertSymbol('∨')">∨</button>
+
+    <hr>
+
+    <!-- ARROWS -->
+    <b>Arrows</b><br>
+    <button onclick="insertSymbol('→')">→</button>
+    <button onclick="insertSymbol('←')">←</button>
+    <button onclick="insertSymbol('↑')">↑</button>
+    <button onclick="insertSymbol('↓')">↓</button>
+    <button onclick="insertSymbol('⇢')">⇢</button>
+
+</div>
+
+<script>
+function toggleSymbols(){
+    let p = document.getElementById("symbolPanel");
+    p.style.display = (p.style.display === "block") ? "none" : "block";
+}
+
+function insertSymbol(sym){
+    document.execCommand("insertText", false, sym);
+}
+
+// Convert normal number to superscript
+function toSuperscript(num){
+    const map = {
+        "0":"⁰","1":"¹","2":"²","3":"³","4":"⁴",
+        "5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹"
+    };
+    return num.split("").map(c => map[c] || c).join("");
+}
+
+// CUSTOM POWER
+function insertCustomPower(){
+    let val = document.getElementById("customPower").value;
+    if(!val) return;
+    insertSymbol(toSuperscript(val));
+}
+
+// CUSTOM ROOT
+function insertCustomRoot(){
+    let val = document.getElementById("customRoot").value;
+    if(!val) return;
+    insertSymbol(toSuperscript(val) + "√");
+}
+</script>

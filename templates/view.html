@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Note</title>
+</head>
+
+<body style="font-family:Arial; padding:20px;">
+
+<!-- NAV -->
+<div style="position:relative; height:40px; margin-bottom:20px; line-height:40px;">
+
+    <!-- LEFT (GROUPED) -->
+    <div style="position:absolute; left:0;">
+        <a href="/topic/{{ topic_id }}">⬅ Back</a> |
+        <a href="/edit/{{ note[0] }}">✏ Edit</a> |
+        <a href="/export/{{ note[0] }}">📄 Export</a>
+    </div>
+
+    <!-- CENTER -->
+    <div style="text-align:center;">
+        <a href="/">🏠 Home</a>
+    </div>
+
+</div>
+
+<hr>
+
+<!-- DELETE NOTE -->
+<form method="POST"
+      action="/delete/{{ note[0] }}"
+      onsubmit="return confirm('Delete this note?')"
+      style="float:right; margin-bottom:10px;">
+
+    <button style="background:orange;color:white;border:none;padding:6px 12px;border-radius:5px;">
+        🗑 Delete
+    </button>
+
+</form>
+
+<!-- TITLE -->
+<h2>{{ note[2] }}</h2>
+<h4>{{ note[3] }}</h4>
+
+<hr>
+
+<!-- CONTENT -->
+<div style="border:1px solid #ccc; padding:15px; background:#fafafa; min-height:200px;">
+    {{ note[4] | safe }}
+</div>
+
+<hr>
+
+<!-- FILES -->
+<h3>📎 Files</h3>
+
+{% if files %}
+    {% for f in files %}
+        <div style="margin-bottom:10px;">
+
+            <a href="/uploads/{{ f[2] }}" target="_blank">
+                📄 {{ f[2] }}
+            </a>
+
+            <form method="POST"
+                  action="/delete_file/{{ f[0] }}/{{ note[0] }}"
+                  style="display:inline;">
+
+                <button style="background:red;color:white;border:none;padding:3px 8px;border-radius:3px;">
+                    ❌
+                </button>
+
+            </form>
+
+        </div>
+    {% endfor %}
+{% else %}
+    <p style="color:gray;">No files uploaded</p>
+{% endif %}
+
+</body>
+</html>

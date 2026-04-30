@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Hub</title>
+</head>
+
+<body style="font-family:Arial; padding:20px;">
+
+<h1>📚 Aaron Study Hub</h1>
+
+<hr>
+
+<!-- ADD TOPIC -->
+<form method="POST" action="/add_topic">
+    <input name="name" placeholder="New Topic">
+    <button>Add</button>
+</form>
+
+<hr>
+
+<!-- TOPICS -->
+{% for t in topics %}
+
+<div style="border:1px solid #ccc; padding:10px; margin:10px;">
+
+    <h3>{{ t[1] }}</h3>
+
+    <a href="/topic/{{ t[0] }}">Open</a> |
+
+    <!-- MOVE TOPIC -->
+    <a href="/topic_up/{{ t[0] }}">⬆ Up</a>
+    <a href="/topic_down/{{ t[0] }}">⬇ Down</a>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>

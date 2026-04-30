@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Topic</title>
+
+    <style>
+        .note-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .note-right {
+            text-align: right;
+            min-width: 80px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body style="font-family:Arial;padding:20px;">
+
+<!-- ✅ POPUP (NON-BLOCKING) -->
+{% if request.args.get("error") == "not_empty" %}
+<div id="popup"
+     style="
+        position:fixed;
+        top:20px;
+        left:50%;
+        transform:translateX(-50%);
+        background:#ff4d4d;
+        color:white;
+        padding:12px 20px;
+        border-radius:6px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.3);
+        z-index:9999;
+        font-weight:bold;
+     ">
+    ❌ Cannot delete topic (not empty)
+</div>
+
+<script>
+setTimeout(()=>{
+    document.getElementById("popup").style.display="none";
+}, 2500);
+</script>
+{% endif %}
+
+<!-- NAV -->
+<div style="position:relative; height:40px; margin-bottom:20px; line-height:40px;">
+
+    <!-- LEFT -->
+    <div style="position:absolute; left:0;">
+        <a href="/">⬅ Back</a>
+    </div>
+
+    <!-- CENTER -->
+    <div style="text-align:center;">
+        <a href="/">🏠 Home</a>
+    </div>
+
+</div>
+
+<hr>
+
+<!-- HEADER -->
+<div style="display:flex; justify-content:space-between; align-items:center;">
+
+    <h1>📘 {{ topic[0] }}</h1>
+
+    <!-- DELETE TOPIC -->
+    <form method="POST"
+          action="/delete_topic/{{ topic_id }}"
+          onsubmit="return confirm('Delete this topic? Only if empty.')">
+
+        <button style="background:orange;color:white;border:none;padding:8px 12px;border-radius:5px;">
+            🗑 Delete Topic
+        </button>
+
+    </form>
+
+</div>
+
+<!-- RENAME -->
+<form method="POST" action="/rename_topic/{{ topic_id }}">
+    <input name="name" placeholder="Rename topic">
+    <button type="submit">Rename</button>
+</form>
+
+<hr>
+
+<a href="/add/{{ topic_id }}">➕ Add Note</a>
+
+<hr>
+
+<!-- NOTES -->
+{% for n in notes %}
+
+<div class="note-card">
+
+    <div>
+        <b>{{ n[2] }}</b><br>
+        {{ n[3] }}<br><br>
+
+        <a href="/note/{{ n[0] }}">View</a> |
+        <a href="/edit/{{ n[0] }}">Edit</a>
+    </div>
+
+    <div class="note-right">
+        <a href="/move_up/{{ n[0] }}/{{ topic_id }}">⬆</a><br>
+        <a href="/move_down/{{ n[0] }}/{{ topic_id }}">⬇</a>
+    </div>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>
