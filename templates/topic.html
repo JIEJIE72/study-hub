@@ -29,7 +29,7 @@
 
 <body style="font-family:Arial;padding:20px;">
 
-<!-- ✅ POPUP (NON-BLOCKING) -->
+<!-- 🔐 POPUP (KEEP ORIGINAL) -->
 {% if request.args.get("error") == "not_empty" %}
 <div id="popup"
      style="
@@ -55,17 +55,19 @@ setTimeout(()=>{
 </script>
 {% endif %}
 
-<!-- NAV -->
-<div style="position:relative; height:40px; margin-bottom:20px; line-height:40px;">
+<!-- 🔝 TOP NAVIGATION (UPDATED) -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
 
-    <!-- LEFT -->
-    <div style="position:absolute; left:0;">
+    <div>
         <a href="/">⬅ Back</a>
     </div>
 
-    <!-- CENTER -->
-    <div style="text-align:center;">
+    <div>
         <a href="/">🏠 Home</a>
+    </div>
+
+    <div>
+        <a href="/logout">Logout</a>
     </div>
 
 </div>

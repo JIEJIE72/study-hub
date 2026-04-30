@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, send_file, session
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, send_file
 from docx import Document
 import os
 import sqlite3
@@ -6,37 +6,6 @@ import io
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-
-# ---------------- LOGIN SYSTEM ----------------
-app.secret_key = "studyhub_secret_2026"
-
-USERNAME = "aaron"
-PASSWORD = "1234"
-
-def login_required():
-    return session.get("logged_in")
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    error = None
-
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if username == USERNAME and password == PASSWORD:
-            session["logged_in"] = True
-            return redirect("/")
-        else:
-            error = "Invalid login"
-
-    return render_template("login.html", error=error)
-
-
-@app.route("/logout")
-def logout():
-    session.pop("logged_in", None)
-    return redirect("/login")
 
 # ---------------- PATHS ----------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -86,9 +55,6 @@ init_db()
 # ---------------- HOME ----------------
 @app.route("/")
 def index():
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("SELECT * FROM topics ORDER BY order_index ASC")
@@ -99,9 +65,6 @@ def index():
 # ---------------- TOPIC ----------------
 @app.route("/topic/<int:id>")
 def topic(id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -126,9 +89,6 @@ def topic(id):
 # ---------------- ADD TOPIC ----------------
 @app.route("/add_topic", methods=["POST"])
 def add_topic():
-    if not login_required():
-        return redirect("/login")
-
     name = request.form.get("name", "").strip()
     if not name:
         return redirect("/")
@@ -152,9 +112,6 @@ def add_topic():
 # ---------------- ADD NOTE ----------------
 @app.route("/add/<int:topic_id>", methods=["GET", "POST"])
 def add(topic_id):
-    if not login_required():
-        return redirect("/login")
-
     if request.method == "POST":
 
         title = request.form.get("title", "")
@@ -195,9 +152,6 @@ def add(topic_id):
 # ---------------- VIEW NOTE ----------------
 @app.route("/note/<int:id>")
 def view(id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -214,9 +168,6 @@ def view(id):
 # ---------------- EDIT NOTE ----------------
 @app.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit(id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -257,9 +208,6 @@ def edit(id):
 # ---------------- MOVE TOPIC ----------------
 @app.route("/topic_up/<int:id>")
 def topic_up(id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -286,9 +234,6 @@ def topic_up(id):
 
 @app.route("/topic_down/<int:id>")
 def topic_down(id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -316,9 +261,6 @@ def topic_down(id):
 # ---------------- MOVE NOTE ----------------
 @app.route("/move_up/<int:id>/<int:topic_id>")
 def move_up(id, topic_id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -345,9 +287,6 @@ def move_up(id, topic_id):
 
 @app.route("/move_down/<int:id>/<int:topic_id>")
 def move_down(id, topic_id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -375,9 +314,6 @@ def move_down(id, topic_id):
 # ---------------- RENAME TOPIC ----------------
 @app.route("/rename_topic/<int:id>", methods=["POST"])
 def rename_topic(id):
-    if not login_required():
-        return redirect("/login")
-
     name = request.form.get("name", "").strip()
 
     conn = sqlite3.connect(DB_PATH)
@@ -391,9 +327,6 @@ def rename_topic(id):
 # ---------------- DELETE TOPIC ----------------
 @app.route("/delete_topic/<int:id>", methods=["POST"])
 def delete_topic(id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -402,7 +335,7 @@ def delete_topic(id):
     conn.close()
 
     if count > 0:
-        return redirect(url_for("topic", id=id))
+        return redirect(url_for("topic", id=id, error="not_empty"))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -415,9 +348,6 @@ def delete_topic(id):
 # ---------------- DELETE NOTE ----------------
 @app.route("/delete/<int:id>", methods=["POST"])
 def delete(id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -435,9 +365,6 @@ def delete(id):
 # ---------------- DELETE FILE ----------------
 @app.route("/delete_file/<int:file_id>/<int:note_id>", methods=["POST"])
 def delete_file(file_id, note_id):
-    if not login_required():
-        return redirect("/login")
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -461,11 +388,9 @@ def delete_file(file_id, note_id):
 def uploads(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
-# ---------------- EXPORT WORD ----------------
+# ---------------- EXPORT WORD (FIXED NEW LINES) ----------------
 @app.route("/export/<int:id>")
 def export(id):
-    if not login_required():
-        return redirect("/login")
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -479,11 +404,13 @@ def export(id):
     doc = Document()
     doc.add_heading(title or "", 0)
 
+    # SUBJECT
     p1 = doc.add_paragraph()
     r1 = p1.add_run("Subject:\n")
     r1.bold = True
     p1.add_run(subject or "")
 
+    # CONTENT
     p2 = doc.add_paragraph()
     r2 = p2.add_run("\nContents:\n")
     r2.bold = True
@@ -506,3 +433,4 @@ def export(id):
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     app.run()
+    
